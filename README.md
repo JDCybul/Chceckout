@@ -1,4 +1,4 @@
-#Chceckout Controller 3.0 - Code sample.
+#Checkout Controller 3.0 - Code sample.
 
 ###Run with gradle:
 
