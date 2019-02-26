@@ -1,7 +1,7 @@
 package co.cybulscy.checkout.controller;
 
 import co.cybulscy.checkout.discount.DiscountService;
-import co.cybulscy.checkout.exepction.BasketClosedExceptoin;
+import co.cybulscy.checkout.exepction.BasketClosedException;
 import co.cybulscy.checkout.exepction.ResourceNotFoundException;
 import co.cybulscy.checkout.model.Basket;
 import co.cybulscy.checkout.model.Item;
@@ -28,7 +28,7 @@ public class BasketController {
 	}
 
 	@PatchMapping("/{basketId}")
-	public void scanItems(@RequestBody @Valid Item item, @PathVariable("basketId") Long basketId) throws BasketClosedExceptoin {
+	public void scanItems(@RequestBody @Valid Item item, @PathVariable("basketId") Long basketId) throws BasketClosedException {
 		item.setProduct(productRepository.findById(item.getProduct().getId())
 				.orElseThrow(() -> new ResourceNotFoundException("There is no basket with id: " + basketId)));
 		Basket basket = getBasket(basketId);
@@ -37,10 +37,10 @@ public class BasketController {
 	}
 
 	@DeleteMapping("/{basketId}")
-	public BigDecimal closeBasket(@PathVariable("basketId") Long basketId) throws BasketClosedExceptoin {
+	public BigDecimal closeBasket(@PathVariable("basketId") Long basketId) throws BasketClosedException {
 		Basket basket = getBasket(basketId);
 		if (basket.isClosed()) {
-			throw new BasketClosedExceptoin("Basket is already closed.");
+			throw new BasketClosedException("Basket is already closed.");
 		}
 		basket.close();
 		basket = discountService.includeDiscount(basket);

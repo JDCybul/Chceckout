@@ -3,7 +3,6 @@ package co.cybulscy.checkout.discount.table;
 import co.cybulscy.checkout.discount.Discount;
 import co.cybulscy.checkout.model.Basket;
 import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 
 @Component

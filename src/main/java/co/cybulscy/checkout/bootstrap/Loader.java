@@ -1,6 +1,6 @@
 package co.cybulscy.checkout.bootstrap;
 
-import co.cybulscy.checkout.exepction.BasketClosedExceptoin;
+import co.cybulscy.checkout.exepction.BasketClosedException;
 import co.cybulscy.checkout.model.Basket;
 import co.cybulscy.checkout.model.Item;
 import co.cybulscy.checkout.model.Product;
@@ -24,7 +24,7 @@ public class Loader {
 
 	@Transactional
 	@Transient
-	public void loadBasketToDb() throws BasketClosedExceptoin {
+	public void loadBasketToDb() throws BasketClosedException {
 
 		Product mango = createProduct("Mango", BigDecimal.valueOf(4.5));
 		Product kiwi = createProduct("Kiwi", BigDecimal.valueOf(3.5));

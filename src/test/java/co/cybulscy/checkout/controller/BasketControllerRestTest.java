@@ -38,6 +38,7 @@ class BasketControllerRestTest {
 	@Test
 	void openNewBasket1() {
 		ResponseEntity<Basket> response = restTemplate.exchange(BASKET_REST_URL, POST, null, Basket.class);
+
 		assertEquals(SC_OK, response.getStatusCodeValue());
 	}
 
@@ -46,6 +47,7 @@ class BasketControllerRestTest {
 		long basketId = 5L;
 		HttpEntity<Item> item = buildScanItemEmptyParam();
 		ResponseEntity<Object> response = restTemplate.exchange(createScanItemUrl(basketId), PATCH, item, Object.class);
+
 		assertEquals(SC_OK, response.getStatusCodeValue());
 	}
 
@@ -53,6 +55,7 @@ class BasketControllerRestTest {
 	void scanItem2() {
 		long basketId = 1231312L;
 		HttpEntity<Item> item = buildScanItemEmptyParam();
+
 		assertThrows(NotFound.class, () -> restTemplate.exchange(createScanItemUrl(basketId), PATCH, item, Object.class));
 	}
 
@@ -60,6 +63,7 @@ class BasketControllerRestTest {
 	void scanItems3() {
 		long basketId = 5L;
 		HttpEntity<Item> item = new HttpEntity<>(new Item());
+
 		assertThrows(BadRequest.class, () -> restTemplate.exchange(createScanItemUrl( basketId ), PATCH, item, Object.class));
 	}
 

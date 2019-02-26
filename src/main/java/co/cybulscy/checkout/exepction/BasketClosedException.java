@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.GONE)
-public class BasketClosedExceptoin extends Exception {
+public class BasketClosedException extends Exception {
 
-	public BasketClosedExceptoin(String message) {
+	public BasketClosedException(String message) {
 		super(message);
 	}
 }

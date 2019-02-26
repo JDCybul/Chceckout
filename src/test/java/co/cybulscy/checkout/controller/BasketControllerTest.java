@@ -1,6 +1,6 @@
 package co.cybulscy.checkout.controller;
 
-import co.cybulscy.checkout.exepction.BasketClosedExceptoin;
+import co.cybulscy.checkout.exepction.BasketClosedException;
 import co.cybulscy.checkout.exepction.ResourceNotFoundException;
 import co.cybulscy.checkout.model.Basket;
 import co.cybulscy.checkout.model.Item;
@@ -10,7 +10,6 @@ import co.cybulscy.checkout.repository.ProductRepository;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,51 +46,50 @@ public class BasketControllerTest {
 		basket = basketController.openNewBasket();
 	}
 
-	@DisplayName("Basket is not null.")
 	@Test
 	void openNewBasket1() {
 		Basket basket = basketController.openNewBasket();
+
 		assertNotNull(basket);
 		assertTrue(basket.getId() > 0);
 		assertTrue(basketRepository.findById(basket.getId()).isPresent());
 
 	}
 
-	@DisplayName("Basked successfully opened.")
 	@Test
 	void openNewBasket2() {
 		Basket basket = basketController.openNewBasket();
+
 		assertTrue(!basket.isClosed());
 	}
 
-	@DisplayName("Basket exists.")
 	@Test
 	void openNewBasket3() {
 		Basket basket = basketController.openNewBasket();
+
 		assertTrue(basket.getId() > 0);
 	}
 
-	@DisplayName("Resource not found")
 	@Test
 	void scanItems()  {
 		Item item = new Item();
 		item.setProduct(new Product("citron", BigDecimal.ONE));
+
 		assertThrows(ResourceNotFoundException.class, ()->basketController.scanItems(item, basket.getId()));
 	}
 
-	@DisplayName("Basket already closed")
 	@Test
 	void scanItems2() {
 		Item item = new Item();
 		item.setProduct(new Product());
 		item.getProduct().setId(1L);
 		basket.close();
-		assertThrows(BasketClosedExceptoin.class, ()-> basketController.scanItems(item, basket.getId()));
+
+		assertThrows( BasketClosedException.class, ()-> basketController.scanItems(item, basket.getId()));
 	}
 
-	@DisplayName("Item quantity ok")
 	@Test
-	void scanItems3() throws BasketClosedExceptoin {
+	void scanItems3() throws BasketClosedException {
 		Item item = new Item();
 		Product product = new Product();
 		product.setId(1L);
@@ -107,7 +105,7 @@ public class BasketControllerTest {
 	}
 
 	@Test
-	public void scanItems4() throws BasketClosedExceptoin {
+	public void scanItems4() throws BasketClosedException {
 		Item item1 = new Item();
 		Product product = new Product();
 		product.setId(1L);
@@ -130,8 +128,7 @@ public class BasketControllerTest {
 	}
 
 	@Test
-	void scanItems5() throws BasketClosedExceptoin {
-
+	void scanItems5() throws BasketClosedException {
 		final Item item1 = new Item();
 		Product product = new Product();
 		product.setId(1L);
@@ -158,25 +155,28 @@ public class BasketControllerTest {
 	}
 
 	@Test
-	void closeBasketSuccessful() throws BasketClosedExceptoin {
+	void closeBasketSuccessful() throws BasketClosedException {
 		basketController.closeBasket(basket.getId());
+
 		assertTrue(basket.isClosed());
 	}
 
 	@Test
 	void baskedAlreadyClosed(){
 		basket.close();
-		assertThrows(BasketClosedExceptoin.class, ()->basketController.closeBasket(basket.getId()));
+
+		assertThrows( BasketClosedException.class, ()->basketController.closeBasket(basket.getId()));
 	}
 
 	@Test
 	void closeBasketNotExist(){
+
 		assertThrows(ResourceNotFoundException.class, ()->basketController.closeBasket(888L));
 
 	}
 
 	@Test
-	void addingItem() throws BasketClosedExceptoin {
+	void addingItem() throws BasketClosedException {
 		Product mango = createProduct("mango", BigDecimal.valueOf(4.40));
 		Product milk = createProduct("milk", BigDecimal.valueOf(2.05));
 		Item item = new Item();
@@ -195,7 +195,7 @@ public class BasketControllerTest {
 	}
 
 	@Test
-	void calculatingDiscount() throws BasketClosedExceptoin {
+	void calculatingDiscount() throws BasketClosedException {
 		Product mango = createProduct("mango", BigDecimal.valueOf(4.40));
 		Product milk = createProduct("milk", BigDecimal.valueOf(2.05));
 		Item item = new Item();
@@ -212,7 +212,7 @@ public class BasketControllerTest {
 	}
 
 	@Test
-	void calculatingDiscountWhenIncludeDiscountWasUsed() throws BasketClosedExceptoin {
+	void calculatingDiscountWhenIncludeDiscountWasUsed() throws BasketClosedException {
 		Product milk = createProduct("milk", BigDecimal.valueOf(5));
 		Item item = new Item();
 		item.setQuantity(5);
@@ -221,29 +221,6 @@ public class BasketControllerTest {
 		basket.includeDiscount(BigDecimal.valueOf(250));
 
 		assertEquals(BigDecimal.valueOf(0), basket.getTotalPrice());
-	}
-
-	@Test
-	void isEqualTest(){
-		Product product1 = productRepository.findById(3L).get();
-		Product product2 = new Product();
-		product2.setId(3L);
-
-		assertEquals(product1, product2);
-	}
-	@Test
-	void isNotEqualById(){
-		Product product1 = productRepository.findById(3L).get();
-		Product product2 = new Product();
-		product2.setId(4L);
-
-		assertNotEquals(product1, product2);
-	}
-
-	@Test
-	void isNotEqual(){
-		Product product = productRepository.findById(3L).get();
-		assertNotEquals(product, null);
 	}
 
 	private Product createProduct(String name, BigDecimal price) {

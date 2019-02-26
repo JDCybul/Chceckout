@@ -1,9 +1,8 @@
 package co.cybulscy.checkout.model;
 
-import co.cybulscy.checkout.exepction.BasketClosedExceptoin;
+import co.cybulscy.checkout.exepction.BasketClosedException;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -27,9 +26,9 @@ public class Basket extends BaseEntity {
 	@Setter(AccessLevel.NONE)
 	private boolean closed;
 
-	public void addItem(Item item) throws BasketClosedExceptoin {
+	public void addItem(Item item) throws BasketClosedException {
 		if (closed) {
-			throw new BasketClosedExceptoin("Basket is closed. Cannot add items");
+			throw new BasketClosedException("Basket is closed. Cannot add items");
 		}
 		items.stream().filter(item1 -> isSameItem(item, item1)).forEach(item1 -> item1.setQuantity(item.getQuantity() + item1.getQuantity()));
 		if (items.stream().noneMatch(item1 -> isSameItem(item, item1))) {

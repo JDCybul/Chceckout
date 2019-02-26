@@ -21,6 +21,7 @@ class ProductTest {
 		Product product1 = productRepository.findById(3L).get();
 		Product product2 = new Product();
 		product2.setId(3L);
+
 		assertEquals(product1, product2);
 	}
 	@Test
@@ -28,12 +29,14 @@ class ProductTest {
 		Product product1 = productRepository.findById(3L).get();
 		Product product2 = new Product();
 		product2.setId(4L);
+
 		assertNotEquals(product1, product2);
 	}
 
 	@Test
 	void isNotEqualTest(){
 		Product product = productRepository.findById(3L).get();
+
 		assertNotEquals(product, null);
 	}
 

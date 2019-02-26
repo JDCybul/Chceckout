@@ -2,7 +2,6 @@ package co.cybulscy.checkout.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
